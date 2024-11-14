@@ -22,7 +22,6 @@ function ChatApp() {
   ]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -31,6 +30,7 @@ function ChatApp() {
     if (input.trim()) {
       setMessages([...messages, { type: 'user', content: input.trim() }]);
       setInput('');
+      // Simulate AI response
       setTimeout(() => {
         setMessages(prev => [...prev, { type: 'ai', content: "I'm an AI assistant. I can help you analyze your data once you upload a file." }]);
       }, 1000);
@@ -42,23 +42,6 @@ function ChatApp() {
     setMessages(prev => [...prev, { type: 'ai', content: `Great! I've received your file: ${file.name}. What would you like to know about it?` }]);
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files.length) {
-      handleFileUpload(e.dataTransfer.files[0]);
-    }
-  };
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -66,9 +49,12 @@ function ChatApp() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <div className="flex h-screen bg-gray-900 text-white">
+      <div className="flex h-screen bg-gray-900 text-white relative overflow-hidden ">
         {isSidebarOpen && (
-          <Paper elevation={3} className="w-80 h-full p-4 bg-purple-900 text-white overflow-y-auto">
+          <Paper 
+            elevation={3} 
+            className="absolute md:relative md:w-80 w-full h-full p-4 bg-purple-900 text-white overflow-y-auto z-20 pt-16"
+          >
             <Typography variant="h5" className="mb-4 mt-20">
               MSL Insights Assistant
             </Typography>
@@ -79,12 +65,7 @@ function ChatApp() {
               <Typography variant="subtitle1" className="mb-2">
                 Upload a file for analysis
               </Typography>
-              <div
-                className={`border-2 rounded-lg p-4 text-center ${isDragging ? 'border-purple-500' : 'border-dashed border-gray-300'}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
                 <p className="mb-2">Drag and drop file here</p>
                 <p className="text-sm text-gray-400 mb-2">Limit 200MB per file • CSV, XLSX, XLS</p>
                 <Button
@@ -112,15 +93,16 @@ function ChatApp() {
             </ul>
           </Paper>
         )}
-        <main className="flex-1 flex flex-col">
+        <main className={`flex-1 flex flex-col ${isSidebarOpen ? '' : ''}`}>
+          {/* Sidebar Toggle Button */}
           <button
             onClick={toggleSidebar}
-            className="absolute top-4 left-4 z-10 p-2 rounded-full bg-purple-700 text-white"
+            className="absolute top-4 left-4 z-30 p-2 rounded-full bg-purple-700 text-white"
           >
             {isSidebarOpen ? '✕' : '☰'}
           </button>
-          <Paper elevation={3} className="flex-1 flex flex-col bg-gray-800 overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-4">
+          <Paper elevation={3} className="flex-1 flex flex-col bg-gray-800 overflow-hidden ">
+            <div className="flex-1 overflow-y-auto p-4 ml-20 mr-20" >
               {messages.map((message, index) => (
                 <div
                   key={index}
@@ -141,7 +123,7 @@ function ChatApp() {
               ))}
               <div ref={messagesEndRef} />
             </div>
-            <form onSubmit={handleSendMessage} className="p-4 bg-gray-900">
+            <form onSubmit={handleSendMessage} className="p-4 bg-gray-900 ml-20 mr-6">
               <div className="flex">
                 <TextField
                   fullWidth
