@@ -25,11 +25,15 @@ const ChatBox = ({ toggleSidebar, isSidebarOpen }) => {
   };
 
   return (
-    <div className="flex flex-col  p-4 text-white bg-gray-900">
+    <div 
+    className={`${
+        !isSidebarOpen ?"flex flex-col  p-4 text-white bg-gray-900" :"hidden"}`}>
       <div className="flex justify-between items-center mb-4">
-        <IconButton onClick={toggleSidebar} className="lg:hidden text-white">
-          <MenuIcon />
-        </IconButton>
+       {
+        !isSidebarOpen &&  (<IconButton onClick={toggleSidebar} className="lg:hidden text-white ">
+        <MenuIcon />
+      </IconButton>)
+       }
         <h1 className="text-center text-3xl font-bold flex-1">What can I help with?</h1>
       </div>
       <div className="flex-1 overflow-y-auto mb-2">
@@ -42,7 +46,8 @@ const ChatBox = ({ toggleSidebar, isSidebarOpen }) => {
           </div>
         ))}
       </div>
-      <div className="flex items-center mb-2">
+      <div
+        className="flex items-center mb-2">
         <TextField
           variant="outlined"
           placeholder="MessageGPT"

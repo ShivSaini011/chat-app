@@ -21,7 +21,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="flex h-screen bg-gray-900 z-4">
+      <div className="flex h-screen bg-gray-900 ">
         {isSidebarOpen && <Sidebar closeSidebar={toggleSidebar} />}
         <div className="flex-1">
         <div className="flex items-center justify-center mb-4">
