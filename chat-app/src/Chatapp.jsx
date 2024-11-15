@@ -128,6 +128,9 @@ function ChatApp() {
                 <TextField
                   fullWidth
                   variant="outlined"
+
+
+                  
                   placeholder="Type your message..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
